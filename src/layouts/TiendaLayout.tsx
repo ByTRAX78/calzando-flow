@@ -1,10 +1,12 @@
 // src/layouts/TiendaLayout.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import StoreDashboard from "@/pages/store/Dashboard";
-import StoreInventory from "@/pages/store/Inventory";
+// ¡ESTA LÍNEA NECESITA LLAVES!
+import { StoreInventory } from "@/pages/store/Inventory"; 
 import StoreTasks from "@/pages/store/Task";
 import StorePersonnel from "@/pages/store/Personnel";
-import PosPage from "@/pages/POS";
+// ¡Y ESTA LÍNEA TAMBIÉN NECESITA LLAVES!
+import { POSPage } from "@/pages/POS"; 
 
 const TiendaLayout = () => {
   return (
@@ -14,7 +16,7 @@ const TiendaLayout = () => {
       <Route path="inventory" element={<StoreInventory />} />
       <Route path="tasks" element={<StoreTasks />} />
       <Route path="personnel" element={<StorePersonnel />} />
-      <Route path="pos" element={<PosPage />} />
+      <Route path="pos" element={<POSPage />} />
     </Routes>
   );
 };
