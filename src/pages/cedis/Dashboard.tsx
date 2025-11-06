@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import AIInventoryService from "@/services/AIInventoryService";
+import { getExamplePrediction } from '@/api/cedisApi';
 import { 
   LayoutDashboard,
   Truck, 
@@ -66,9 +67,14 @@ const CEDISDashboard = () => {
   const loadAIPredictions = async () => {
     setLoading(true);
     try {
+      
+      
       await AIInventoryService.initializeModel();
       const prediction = await AIInventoryService.predictNextMonth();
       setAiPrediction(prediction);
+
+      const predictions = await getExamplePrediction();
+      //console.log(predictions);
       
       const analyses = await Promise.all(
         ['NIKE-001', 'ADID-002', 'PUMA-003', 'VANS-004', 'CONV-005']

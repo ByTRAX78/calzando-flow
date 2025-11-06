@@ -10,4 +10,20 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      // Cualquier petición a /api-iam será reenviada a IBM Cloud
+      '/api-iam': {
+        target: 'https://iam.cloud.ibm.com',
+        changeOrigin: true, // Necesario para que el servidor de IBM acepte la petición
+        rewrite: (path) => path.replace(/^\/api-iam/, ''), // Quita /api-iam del path
+      },
+      // Proxy para la URL de SCORING (opcional, pero recomendado)
+      '/api-scoring': {
+        target: 'https://private.us-south.ml.cloud.ibm.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-scoring/, ''),
+      }
+    }
+  }
 });
