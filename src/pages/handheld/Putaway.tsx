@@ -1,4 +1,3 @@
-// src/pages/handheld/Putaway.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Html5QrcodeScanner } from "html5-qrcode";
@@ -10,18 +9,16 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, CheckCircle, XCircle } from "lucide-react";
 
-// Estructura del JSON esperado (en QR o manual)
 interface QrData {
   categoria: string;
   producto: {
     marca: string;
     modelo: string;
     talla: string;
-    piezas: number; // <--- CAMPO NUEVO
+    piezas: number;
   };
 }
 
-// Exportación nombrada para que coincida con HandheldLayout.tsx
 export function PutawayPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,19 +27,17 @@ export function PutawayPage() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [activeTab, setActiveTab] = useState("scan");
   
-  // Estado del formulario manual
   const [manualForm, setManualForm] = useState({
     categoria: "calzado-hombre",
     marca: "",
     modelo: "",
     talla: "",
-    piezas: 1, // <--- CAMPO NUEVO (default 1)
+    piezas: "1",
   });
 
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
   const scannerId = "qr-reader-container";
 
-  // --- LÓGICA DEL ESCÁNER ---
   useEffect(() => {
     if (activeTab === "scan" && status === "idle") {
       startScanner();
@@ -75,7 +70,6 @@ export function PutawayPage() {
           return;
         }
 
-        // Validación del QR (ahora incluye piezas)
         if (!parsedData.categoria || !parsedData.producto || !parsedData.producto.piezas) {
           setStatus("error");
           setErrorMessage('Error de QR: El JSON no tiene "categoria" y "producto" con "piezas".');
@@ -100,12 +94,9 @@ export function PutawayPage() {
     }
   };
 
-  // --- LÓGICA DEL FORMULARIO MANUAL ---
   const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Permitir cambiar piezas a número
-    const valorNumerico = name === 'piezas' ? parseInt(value) || 1 : value;
-    setManualForm(prev => ({ ...prev, [name]: valorNumerico }));
+    setManualForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleManualSubmit = async (e: React.FormEvent) => {
@@ -119,14 +110,13 @@ export function PutawayPage() {
 
     const data: QrData = {
       categoria,
-      producto: { marca, modelo, talla, piezas: Number(piezas) } // <--- CAMPO NUEVO
+      producto: { marca, modelo, talla, piezas: Number(piezas) }
     };
 
     setStatus("loading");
     await handleSubmitToBackend(data);
   };
 
-  // --- LÓGICA COMPARTIDA DE ENVÍO ---
   const handleSubmitToBackend = async (data: QrData) => {
     try {
       const response = await fetch("http://localhost:3000/api/inventario", {
@@ -134,7 +124,7 @@ export function PutawayPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           categoria: data.categoria,
-          producto: data.producto, // El objeto producto ya incluye 'piezas'
+          producto: data.producto,
         }),
       });
 
@@ -150,8 +140,7 @@ export function PutawayPage() {
       });
       setStatus("success");
       
-      // Limpiar formulario
-      setManualForm({ ...manualForm, marca: "", modelo: "", talla: "", piezas: 1 });
+      setManualForm({ categoria: manualForm.categoria, marca: "", modelo: "", talla: "", piezas: "1" });
 
     } catch (error: any) {
       toast({ title: "Error de Red", description: error.message, variant: "destructive" });
@@ -209,7 +198,6 @@ export function PutawayPage() {
         )}
 
         <div className={status !== 'idle' ? 'hidden' : 'block'}>
-          {/* Pestaña de Escáner */}
           <TabsContent value="scan">
             <Card>
               <CardHeader>
@@ -222,7 +210,6 @@ export function PutawayPage() {
             </Card>
           </TabsContent>
 
-          {/* Pestaña Manual */}
           <TabsContent value="manual">
             <Card>
               <CardHeader>
@@ -247,7 +234,6 @@ export function PutawayPage() {
                     <Label htmlFor="talla">Talla</Label>
                     <Input id="talla" name="talla" placeholder="Ej: 27.5" value={manualForm.talla} onChange={handleManualChange} required />
                   </div>
-                  {/* --- CAMPO NUEVO --- */}
                   <div>
                     <Label htmlFor="piezas">Número de Piezas</Label>
                     <Input id="piezas" name="piezas" type="number" min="1" value={manualForm.piezas} onChange={handleManualChange} required />

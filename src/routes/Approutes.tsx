@@ -1,35 +1,29 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Routes, Route } from 'react-router-dom';
+import Index from '@/pages/Index';
+import NotFound from '@/pages/NotFound';
+import TiendaLayout from '@/layouts/TiendaLayout';
+import CedisLayout from '@/layouts/CedisLayout';
+// --- AÑADE ESTA LÍNEA ---
+import HandheldLayout from '@/layouts/HandheldLayout'; 
 
-const Index = lazy(() => import("@/pages/Index"));
-
-const StoreLayout = lazy(() => import("@/layouts/StoreLayout"));
-const CedisLayout = lazy(() => import("@/layouts/CedisLayout"));
-const HandheldLayout = lazy(() => import("@/layouts/HandheldLayout"));
-
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-  </div>
-);
-
-const AppRoutes = () => {
+export function Approutes() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        
-        <Route path="/tienda/*" element={<StoreLayout />} />
-        
-        <Route path="/cedis/*" element={<CedisLayout />} />
-        
-        <Route path="/handheld/*" element={<HandheldLayout />} />
-        
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
-  );
-};
+    <Routes>
+      <Route path="/" element={<Index />} />
+      
+      {/* Rutas de la Tienda (POS, Inventario) */}
+      <Route path="/tienda/*" element={<TiendaLayout />} />
+      
+      {/* Rutas del CEDIS */}
+      <Route path="/cedis/*" element={<CedisLayout />} />
 
-export default AppRoutes;
+      {/* --- AÑADE ESTE BLOQUE --- */}
+      {/* Rutas del Handheld (Móvil) */}
+      <Route path="/handheld/*" element={<HandheldLayout />} />
+      {/* --- FIN DEL BLOQUE --- */}
+
+      {/* Ruta 404 */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}

@@ -1,5 +1,5 @@
-// src/pages/store/Inventory.tsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,30 +24,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, Loader2, AlertCircle, Package } from "lucide-react";
+import { RefreshCw, Loader2, AlertCircle, Package, ArrowLeft } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
-// Interfaz para el producto
 interface ProductoInventario {
   id: string; 
   marca: string;
   modelo: string;
   talla: string;
-  piezas: number; // <--- CAMPO NUEVO
+  piezas: number;
 }
 
 const API_URL = "http://localhost:3000/api/inventario";
 
 export function StoreInventory() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [inventory, setInventory] = useState<ProductoInventario[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("calzado-hombre");
 
-  /**
-   * EP 2: OBTENER TODOS LOS PRODUCTOS
-   */
   const fetchInventory = async () => {
     setIsLoading(true);
     setError(null);
@@ -76,10 +73,18 @@ export function StoreInventory() {
     fetchInventory();
   }, [selectedCategory]);
 
+  const getStockColor = (piezas: number) => {
+    if (piezas <= 4) return "text-red-600 font-bold";
+    if (piezas <= 10) return "text-yellow-600 font-bold";
+    return "text-green-600 font-medium";
+  };
   
-  // --- RENDERIZADO ---
   return (
     <div className="p-4 md:p-8 space-y-4">
+      <Button variant="outline" onClick={() => navigate("/tienda/dashboard")}>
+        <ArrowLeft className="mr-2 h-4 w-4" /> Volver al Dashboard de Tienda
+      </Button>
+      
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -125,7 +130,7 @@ export function StoreInventory() {
                   <TableHead>Marca</TableHead>
                   <TableHead>Modelo</TableHead>
                   <TableHead>Talla</TableHead>
-                  <TableHead>Piezas (Stock)</TableHead> {/* <--- COLUMNA NUEVA */}
+                  <TableHead>Piezas (Stock)</TableHead>
                   <TableHead>ID (Redis)</TableHead>
                 </TableRow>
               </TableHeader>
@@ -142,11 +147,8 @@ export function StoreInventory() {
                       <TableCell className="font-medium">{producto.marca}</TableCell>
                       <TableCell>{producto.modelo}</TableCell>
                       <TableCell>{producto.talla}</TableCell>
-                      {/* --- CELDA NUEVA --- */}
-                      <TableCell>
-                        <strong className={producto.piezas <= 5 ? "text-red-500" : "text-green-600"}>
-                          {producto.piezas} pz
-                        </strong>
+                      <TableCell className={getStockColor(producto.piezas)}>
+                        {producto.piezas} pz
                       </TableCell>
                       <TableCell className="text-muted-foreground text-xs">
                         {producto.id}
@@ -157,6 +159,9 @@ export function StoreInventory() {
                   <TableRow>
                     <TableCell colSpan={5} className="text-center h-48">
                       <p className="font-medium">No hay productos</p>
+                       <p className="text-muted-foreground">
+                        No se encontró inventario para "{selectedCategory}".
+                      </p>
                     </TableCell>
                   </TableRow>
                 )}
