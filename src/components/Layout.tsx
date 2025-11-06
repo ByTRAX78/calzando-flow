@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Toaster } from "@/components/ui/toaster";
 
 interface LayoutProps {
   children: ReactNode;
@@ -65,7 +66,6 @@ const Layout = ({
 
   return (
     <div className="flex h-screen flex-col">
-      {/* Top navigation bar */}
       <header className={`bg-gradient-to-r ${moduleGradient[moduleType]} shadow-md z-10`}>
         <div className="mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
@@ -118,7 +118,6 @@ const Layout = ({
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar navigation - desktop */}
         <aside className={`hidden md:flex w-64 flex-col border-r bg-card`}>
           <div className="flex-1 overflow-y-auto p-4">
             <div className="mb-8 flex items-center justify-center">
@@ -166,7 +165,6 @@ const Layout = ({
           </div>
         </aside>
 
-        {/* Mobile navigation */}
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-40 md:hidden">
             <div className="fixed inset-0 bg-black/30" onClick={() => setMobileMenuOpen(false)}></div>
@@ -226,13 +224,13 @@ const Layout = ({
           </div>
         )}
 
-        {/* Main content */}
         <main className="flex-1 overflow-y-auto bg-background">
           <div className="container mx-auto px-4 py-6">
             {children}
           </div>
         </main>
       </div>
+      <Toaster />
     </div>
   );
 };

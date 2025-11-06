@@ -15,6 +15,7 @@ import {
   ShoppingBag,
   Banknote,
 } from "lucide-react";
+import { AiAssistant } from "@/components/AiAssistant";
 
 const StoreDashboard = () => {
   const navigationItems = [
@@ -82,7 +83,6 @@ const StoreDashboard = () => {
       userName="Juan Pérez"
       userRole="Gerente de Tienda"
     >
-      {/* Strategic KPIs */}
       <section className="mb-10">
         <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
           <TrendingUp className="h-6 w-6 text-store" />
@@ -120,7 +120,6 @@ const StoreDashboard = () => {
         </div>
       </section>
 
-      {/* Tactical KPIs */}
       <section className="mb-10">
         <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
           <CheckCircle className="h-6 w-6 text-store" />
@@ -148,8 +147,7 @@ const StoreDashboard = () => {
         </div>
       </section>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Pending Tasks */}
+      <div className="grid md:grid-cols-2 gap-6 mb-10">
         <section>
           <Card>
             <CardHeader className="pb-2">
@@ -184,7 +182,6 @@ const StoreDashboard = () => {
           </Card>
         </section>
         
-        {/* Sales Summary */}
         <section>
           <Card>
             <CardHeader className="pb-2">
@@ -227,6 +224,10 @@ const StoreDashboard = () => {
           </Card>
         </section>
       </div>
+
+      <section>
+        <AiAssistant />
+      </section>
 
     </Layout>
   );

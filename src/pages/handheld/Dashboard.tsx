@@ -1,3 +1,4 @@
+import React from 'react';
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,10 @@ import {
   ArrowUpToLine,
   Trash2,
   FileSearch,
-  CheckCircle
+  CheckCircle,
+  Sparkles,
+  Loader2,
+  Route
 } from "lucide-react";
 import {
   Tabs,
@@ -20,8 +24,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
 
 const HandheldDashboard = () => {
+  const { toast } = useToast();
+  const [isOptimizing, setIsOptimizing] = React.useState(false);
+  const [tasksOptimized, setTasksOptimized] = React.useState(false);
+  
   const navigationItems = [
     { name: 'Dashboard', href: '/handheld', icon: LayoutDashboard, active: true },
     { name: 'Recibo', href: '/handheld/receipt', icon: Truck },
@@ -116,7 +126,6 @@ const HandheldDashboard = () => {
     }
   ];
 
-  // Function to get priority badge color
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case "high":
@@ -130,12 +139,10 @@ const HandheldDashboard = () => {
     }
   };
 
-  // Helper function to get route based on task type
   const getTaskRoute = (type: string) => {
     return `/handheld/${type}`;
   };
 
-  // Helper function to get module color class
   const getModuleColorClass = (type: string) => {
     switch (type) {
       case "receipt":
@@ -153,6 +160,19 @@ const HandheldDashboard = () => {
     }
   };
 
+  const handleOptimizeRoutes = () => {
+    setIsOptimizing(true);
+    setTasksOptimized(false);
+    setTimeout(() => {
+      setIsOptimizing(false);
+      setTasksOptimized(true);
+      toast({
+        title: "Rutas Optimizadas",
+        description: "La IA ha recalculado el orden de tareas para minimizar el desplazamiento.",
+      })
+    }, 2000);
+  };
+
   return (
     <Layout 
       title="Operaciones BOH"
@@ -162,7 +182,6 @@ const HandheldDashboard = () => {
       userName="María González"
       userRole="Asociado Operativo"
     >
-      {/* Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {statusCards.map((card, index) => {
           const Icon = card.icon;
@@ -190,64 +209,104 @@ const HandheldDashboard = () => {
           <TabsTrigger value="activity">Actividad Reciente</TabsTrigger>
         </TabsList>
         
-        {/* Pending Tasks Tab */}
         <TabsContent value="tasks">
           <Card className="shadow-soft">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Package className="h-5 w-5 text-handheld" />
-                Cola de Trabajo
-              </CardTitle>
+              <div className="flex items-center justify-between mb-2">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                  <Package className="h-5 w-5 text-handheld" />
+                  Cola de Trabajo
+                </CardTitle>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleOptimizeRoutes}
+                  disabled={isOptimizing}
+                >
+                  {isOptimizing ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 mr-2" />
+                  )}
+                  {isOptimizing ? 'Optimizando...' : 'Optimizar Rutas con IA'}
+                </Button>
+              </div>
               <CardDescription>
-                Tareas pendientes priorizadas automáticamente
+                {isOptimizing 
+                  ? 'La IA está recalculando las rutas más eficientes...' 
+                  : tasksOptimized 
+                  ? 'Cola de tareas priorizada por IA para la ruta más corta.'
+                  : 'Tareas pendientes priorizadas automáticamente'
+                }
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {pendingTasks.map((task) => {
-                  const TaskIcon = task.icon;
-                  const colorClass = getModuleColorClass(task.type);
-                  
-                  return (
-                    <Card key={task.id} className="shadow-soft hover:shadow-medium cursor-pointer transition-all">
-                      <CardContent className="p-0">
-                        <div className="flex border-l-4 border-handheld">
-                          <div className="p-4 flex-1">
-                            <div className="flex justify-between items-start mb-2">
-                              <div className="flex items-start gap-3">
-                                <div className={`p-2 rounded-md bg-muted`}>
-                                  <TaskIcon className={`h-5 w-5 text-handheld`} />
-                                </div>
-                                <div>
-                                  <h3 className="font-semibold text-base">{task.title}</h3>
-                                  <p className="text-sm text-muted-foreground">{task.subtitle}</p>
-                                </div>
-                              </div>
-                              <div>
-                                {getPriorityBadge(task.priority)}
-                              </div>
-                            </div>
-                            <div className="flex justify-between items-center mt-4">
-                              <span className="text-xs text-muted-foreground font-mono">{task.id}</span>
-                              <Button 
-                                className={colorClass}
-                                size="sm"
-                              >
-                                Iniciar
-                              </Button>
-                            </div>
+                {isOptimizing ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i} className="shadow-soft">
+                      <CardContent className="p-4">
+                        <div className="flex gap-3">
+                          <Skeleton className="h-10 w-10 rounded-md" />
+                          <div className="flex-1 space-y-2">
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
                           </div>
                         </div>
                       </CardContent>
                     </Card>
-                  );
-                })}
+                  ))
+                ) : (
+                  pendingTasks.map((task) => {
+                    const TaskIcon = task.icon;
+                    const colorClass = getModuleColorClass(task.type);
+                    
+                    return (
+                      <Card key={task.id} className="shadow-soft hover:shadow-medium cursor-pointer transition-all">
+                        <CardContent className="p-0">
+                          <div className={`flex border-l-4 ${tasksOptimized ? 'border-success' : 'border-handheld'}`}>
+                            <div className="p-4 flex-1">
+                              <div className="flex justify-between items-start mb-2">
+                                <div className="flex items-start gap-3">
+                                  <div className={`p-2 rounded-md bg-muted`}>
+                                    <TaskIcon className={`h-5 w-5 ${tasksOptimized ? 'text-success' : 'text-handheld'}`} />
+                                  </div>
+                                  <div>
+                                    <h3 className="font-semibold text-base">{task.title}</h3>
+                                    <p className="text-sm text-muted-foreground">{task.subtitle}</p>
+                                    {tasksOptimized && (
+                                      <Badge variant="outline" className="mt-2 bg-success/10 text-success border-success/30">
+                                        <Route className="h-3 w-3 mr-1" />
+                                        Ruta Optimizada
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </div>
+                                <div>
+                                  {getPriorityBadge(task.priority)}
+                                </div>
+                              </div>
+                              <div className="flex justify-between items-center mt-4">
+                                <span className="text-xs text-muted-foreground font-mono">{task.id}</span>
+                                <Button 
+                                  className={colorClass}
+                                  size="sm"
+                                >
+                                  Iniciar
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                )}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
         
-        {/* Recent Activity Tab */}
         <TabsContent value="activity">
           <Card className="shadow-soft">
             <CardHeader>
@@ -282,7 +341,6 @@ const HandheldDashboard = () => {
                   );
                 })}
                 
-                {/* Show more activities button */}
                 <Button variant="outline" className="w-full">
                   Ver Más Actividad
                 </Button>
@@ -290,7 +348,6 @@ const HandheldDashboard = () => {
             </CardContent>
           </Card>
           
-          {/* Daily Stats Card */}
           <Card className="shadow-soft mt-6">
             <CardHeader>
               <CardTitle className="text-lg font-semibold">
@@ -331,7 +388,6 @@ const HandheldDashboard = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Quick Access Module Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Button className="bg-handheld text-handheld-foreground hover:bg-handheld/90 h-auto py-4 flex-col">
           <Scan className="h-6 w-6 mb-2" />
