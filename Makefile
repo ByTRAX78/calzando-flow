@@ -1,51 +1,45 @@
 # Makefile para el proyecto calzando-flow
 
-.PHONY: install dev build clean docker-build docker-run docker-stop docker-up docker-logs docker-up-logs
+.PHONY: install dev build clean
+.PHONY: docker-build docker-run docker-stop docker-up docker-logs docker-up-logs
+.PHONY: compose-up compose-down compose-logs
 
-# Instala todas las dependencias de npm
+# ... (tus comandos 'install', 'dev', 'build', 'clean' van aquí) ...
 install:
 	npm install
-
-# Inicia el servidor de desarrollo en localhost
 dev:
 	npm run dev
-
-# Genera la compilación de producción en la carpeta /dist
 build:
 	npm run build
-
-# Limpia los módulos de node y la carpeta de build
 clean:
 	rm -rf node_modules dist
 
-# -------- Comandos de Docker --------
-
-# Construye la imagen de Docker
+# -------- Comandos de Docker (Individual) --------
 docker-build:
 	docker build -t calzando-flow:latest .
-
-# Corre el contenedor de Docker en el puerto 8080
 docker-run:
 	docker run -p 8080:80 -d --name calzando-app calzando-flow:latest
-
-# --- NUEVAS INSTRUCCIONES ---
-
-# Detiene y elimina el contenedor existente para evitar conflictos
 docker-stop:
 	-docker stop calzando-app
 	-docker rm calzando-app
-
-# (Opción nueva) Construye la imagen Y levanta el contenedor como demonio
 docker-up: docker-stop docker-build
 	docker run -p 8080:80 -d --name calzando-app calzando-flow:latest
-
-# --- NUEVAS INSTRUCCIONES (Logs) ---
-
-# Muestra los logs (en vivo) del contenedor que está corriendo
 docker-logs:
 	docker logs -f calzando-app
-
-# (Opción nueva) Construye, levanta el demonio Y muestra los logs
 docker-up-logs: docker-up
 	@echo "Contenedor 'calzando-app' corriendo. Mostrando logs en vivo... (Presiona Ctrl+C para salir)"
 	docker logs -f calzando-app
+
+# -------- Comandos de Docker Compose (NUEVOS) --------
+
+# Levanta todo (redis, backend, frontend) en modo demonio y reconstruye
+compose-up:
+	docker-compose up -d --build
+
+# Detiene y elimina todos los contenedores de compose
+compose-down:
+	docker-compose down
+
+# Muestra los logs de TODOS los servicios (redis, back, front)
+compose-logs:
+	docker-compose logs -f
