@@ -5,7 +5,7 @@ import NotFoundPage from './pages/NotFound'
 import HandheldLayout from './layouts/HandheldLayout'
 import TiendaLayout from './layouts/TiendaLayout'
 import CedisLayout from './layouts/CedisLayout'
-import PosPage from './pages/Pos'
+import PosPage from './pages/POS'
 
 function App() {
   return (

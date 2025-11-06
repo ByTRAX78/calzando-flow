@@ -4,7 +4,7 @@ import StoreDashboard from "@/pages/store/Dashboard";
 import StoreInventory from "@/pages/store/Inventory";
 import StoreTasks from "@/pages/store/Task";
 import StorePersonnel from "@/pages/store/Personnel";
-import PosPage from "@/pages/Pos";
+import PosPage from "@/pages/POS";
 
 const TiendaLayout = () => {
   return (
