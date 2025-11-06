@@ -59,6 +59,18 @@ export default {
           DEFAULT: "hsl(var(--info))",
           foreground: "hsl(var(--info-foreground))",
         },
+        cedis: {
+          DEFAULT: "hsl(var(--cedis))",
+          foreground: "hsl(var(--cedis-foreground))",
+        },
+        handheld: {
+          DEFAULT: "hsl(var(--handheld))",
+          foreground: "hsl(var(--handheld-foreground))",
+        },
+        store: {
+          DEFAULT: "hsl(var(--store))",
+          foreground: "hsl(var(--store-foreground))",
+        },
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",

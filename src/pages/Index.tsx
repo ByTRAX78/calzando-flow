@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
   Package, 
-  Users, 
   Smartphone,
+  Warehouse,
   ShoppingBag,
-  TrendingUp
+  Truck
 } from "lucide-react";
 
 const Index = () => {
@@ -15,111 +15,97 @@ const Index = () => {
 
   const roles = [
     {
-      title: "Dashboard de Gestión",
-      description: "Gerencia y Subgerencias",
-      icon: LayoutDashboard,
-      path: "/dashboard",
-      color: "bg-gradient-primary"
+      title: "Tienda",
+      description: "Gestión de Tienda, Inventario y Ventas",
+      icon: ShoppingBag,
+      path: "/tienda", // <-- CORRECCIÓN: Cambiado de "/store" a "/tienda"
+      color: "bg-store text-store-foreground",
+      gradient: "from-store/80 to-store",
     },
     {
-      title: "Operaciones Móviles",
-      description: "Handheld BOH",
+      title: "CEDIS",
+      description: "Centro de Distribución e Integración",
+      icon: Warehouse,
+      path: "/cedis",
+      color: "bg-cedis text-cedis-foreground",
+      gradient: "from-cedis/80 to-cedis",
+    },
+    {
+      title: "Handheld",
+      description: "Operaciones BOH Móviles",
       icon: Smartphone,
       path: "/handheld",
-      color: "bg-gradient-secondary"
-    },
-    {
-      title: "Punto de Venta",
-      description: "POS Integration",
-      icon: ShoppingBag,
-      path: "/pos",
-      color: "bg-primary"
+      color: "bg-handheld text-handheld-foreground",
+      gradient: "from-handheld/80 to-handheld",
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <TrendingUp className="h-12 w-12 text-primary" />
-            <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Calzando México
-            </h1>
-          </div>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Sistema de Gestión de Tienda
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Optimiza tu inventario, operaciones y ventas en un solo lugar
-          </p>
-        </div>
-
-        {/* Role Selection Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {roles.map((role) => {
-            const Icon = role.icon;
-            return (
-              <Card 
-                key={role.path}
-                className="group hover:shadow-strong transition-all duration-300 cursor-pointer border-2 hover:border-primary overflow-hidden"
-                onClick={() => navigate(role.path)}
-              >
-                <div className={`${role.color} p-8 transition-transform group-hover:scale-105`}>
-                  <Icon className="h-16 w-16 text-white mx-auto" />
-                </div>
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold mb-2">{role.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {role.description}
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                  >
-                    Acceder
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Features Overview */}
-        <div className="mt-20 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-8">Funcionalidades Clave</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center p-6">
-              <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Package className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">Control de Inventario</h3>
-              <p className="text-sm text-muted-foreground">
-                Visibilidad total en tiempo real
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <div className="bg-secondary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-secondary" />
-              </div>
-              <h3 className="font-semibold mb-2">Gestión de Personal</h3>
-              <p className="text-sm text-muted-foreground">
-                Roles, tareas y certificaciones
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <div className="bg-success/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="h-8 w-8 text-success" />
-              </div>
-              <h3 className="font-semibold mb-2">KPIs Estratégicos</h3>
-              <p className="text-sm text-muted-foreground">
-                Métricas que impulsan resultados
-              </p>
-            </div>
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
+      {/* Header */}
+      <header className="bg-card border-b shadow-soft py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-primary">Calzando México</h1>
+            <p className="text-sm text-muted-foreground">Sistema Integral de Gestión</p>
           </div>
         </div>
-      </div>
+      </header>
+
+      <main className="flex-1 flex items-center justify-center">
+        <div className="container mx-auto px-4 py-12">
+          {/* Welcome Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-4">Bienvenido al Sistema de Gestión</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              Selecciona tu rol para continuar
+            </p>
+          </div>
+
+          {/* Role Selection Cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {roles.map((role) => {
+              const Icon = role.icon;
+              return (
+                <Card 
+                  key={role.path}
+                  className="overflow-hidden hover:shadow-medium transition-all duration-300 cursor-pointer border-2 hover:border-primary"
+                  onClick={() => navigate(role.path)}
+                >
+                  <div className={`bg-gradient-to-br ${role.gradient} p-6 flex justify-center`}>
+                    <Icon className="h-16 w-16 text-white" />
+                  </div>
+                  <CardContent className="p-6 text-center">
+                    <h3 className="text-xl font-bold mb-3">{role.title}</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      {role.description}
+                    </p>
+                    <Button 
+                      className={`w-full ${role.color} hover:opacity-90`}
+                    >
+                      Ingresar
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-card border-t py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-muted-foreground">
+              © 2025 Calzando México. Todos los derechos reservados.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Versión 1.0.0
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
