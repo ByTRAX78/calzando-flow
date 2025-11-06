@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import HandheldDashboard from "@/pages/handheld/Dashboard";
 // Importando las nuevas páginas de módulos
 import HandheldReceipt from "@/pages/handheld/Receipt";
-import HandheldPutaway from "@/pages/handheld/Putaway";
+import { PutawayPage as HandheldPutaway } from "@/pages/handheld/Putaway";
 import HandheldResupply from "@/pages/handheld/Resupply";
 import HandheldInventory from "@/pages/handheld/Inventory";
 import HandheldWaste from "@/pages/handheld/Waste";
