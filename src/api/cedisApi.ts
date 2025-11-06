@@ -52,8 +52,23 @@ export async function getScoringPrediction(fields: string[], values: any[][]): P
   
   const payload = {
     input_data: [{
-      fields: fields,
-      values: values,
+      "fields": [
+         "TIENDA",
+                                "UNIDAD DE NEGOCIO",
+                                "AÑO",
+                                "MES",
+                                "INV PZS",
+                                "FECHA_COMPLETA",
+                                "ID_P"
+      ],
+      "values": [[
+                                        "Tienda 1",
+                                        "CALZADO CASUAL HOMBRE",
+                                        2025,
+                                        1,
+                                        1200,
+                                        "2025-12-01",
+                                        null]]
     }],
   };
 

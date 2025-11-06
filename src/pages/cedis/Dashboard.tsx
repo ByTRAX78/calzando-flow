@@ -7,6 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import AIInventoryService from "@/services/AIInventoryService";
 import { getExamplePrediction } from '@/api/cedisApi';
+const predictions = await getExamplePrediction();
+
 import { 
   LayoutDashboard,
   Truck, 
@@ -67,14 +69,12 @@ const CEDISDashboard = () => {
   const loadAIPredictions = async () => {
     setLoading(true);
     try {
-      
+      //const predictions = await getExamplePrediction();
+      console.log(predictions[0].values[0][0]);
       
       await AIInventoryService.initializeModel();
       const prediction = await AIInventoryService.predictNextMonth();
       setAiPrediction(prediction);
-
-      const predictions = await getExamplePrediction();
-      //console.log(predictions);
       
       const analyses = await Promise.all(
         ['NIKE-001', 'ADID-002', 'PUMA-003', 'VANS-004', 'CONV-005']
@@ -113,7 +113,7 @@ const CEDISDashboard = () => {
     },
     { 
       title: "Punto de Reorden", 
-      value: aiPrediction ? `${aiPrediction.reorderPoint} u.` : "...",
+      value: aiPrediction ? `${predictions[0].values[0][0]} u.` : "...",
       change: "Automático",
       period: "Lead time: 5 días",
       icon: Activity,

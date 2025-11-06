@@ -20,7 +20,7 @@ export default defineConfig({
       },
       // Proxy para la URL de SCORING (opcional, pero recomendado)
       '/api-scoring': {
-        target: 'https://private.us-south.ml.cloud.ibm.com',
+        target: 'https://us-south.ml.cloud.ibm.com/ml/v4/deployments/a460c30f-d67c-46d8-97ac-cf1dc15085e7/predictions?version=2021-05-01',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api-scoring/, ''),
       }
