@@ -1,3 +1,4 @@
+// src/pages/cedis/Dashboard.tsx
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,6 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import AIInventoryService from "@/services/AIInventoryService";
+import { getExamplePrediction } from '@/api/cedisApi';
+
+// --- LÍNEA PROBLEMÁTICA ELIMINADA ---
+// const predictions = await getExamplePrediction(); // <--- SE FUE
+
 import { 
   LayoutDashboard,
   Truck, 
@@ -52,6 +58,9 @@ const CEDISDashboard = () => {
   const [productAnalysis, setProductAnalysis] = useState([]);
   const [alerts, setAlerts] = useState([]);
   
+  // --- AÑADIR NUEVO ESTADO PARA GUARDAR LA PREDICCIÓN DE IBM ---
+  const [ibmPrediction, setIbmPrediction] = useState(null);
+
   const navigationItems = [
     { name: 'Dashboard', href: '/cedis', icon: LayoutDashboard, active: true },
     { name: 'Embarques', href: '/cedis/shipments', icon: Truck },
@@ -66,6 +75,11 @@ const CEDISDashboard = () => {
   const loadAIPredictions = async () => {
     setLoading(true);
     try {
+      // --- MOVER LA LLAMADA A API AQUÍ ---
+      const predictions = await getExamplePrediction();
+      setIbmPrediction(predictions); // <-- Guardar en el estado
+      console.log(predictions[0].values[0][0]);
+      
       await AIInventoryService.initializeModel();
       const prediction = await AIInventoryService.predictNextMonth();
       setAiPrediction(prediction);
@@ -106,8 +120,9 @@ const CEDISDashboard = () => {
       aiPowered: true
     },
     { 
-      title: "Punto de Reorden", 
-      value: aiPrediction ? `${aiPrediction.reorderPoint} u.` : "...",
+      title: "Punto de Reorden",
+      // --- ACTUALIZAR ESTA LÍNEA PARA LEER DEL ESTADO ---
+      value: ibmPrediction ? `${ibmPrediction[0].values[0][0]} u.` : "...",
       change: "Automático",
       period: "Lead time: 5 días",
       icon: Activity,
@@ -125,6 +140,8 @@ const CEDISDashboard = () => {
     }
   ];
 
+  // ... (El resto del componente sigue igual) ...
+  
   const salesData = [
     { month: 'Ene', real: 145000, prediccion: null },
     { month: 'Feb', real: 128000, prediccion: null },

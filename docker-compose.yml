@@ -11,8 +11,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
-    # --- NUEVA LÍNEA ---
-    # Conecta el volumen 'redis-data' a la carpeta de datos de Redis
     volumes:
       - redis-data:/data
     restart: unless-stopped
@@ -40,6 +38,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # --- INICIA CORRECCIÓN ---
+      # Pasa la variable de entorno local al build de Docker
+      args:
+        - VITE_IBM_API_KEY=${VITE_IBM_API_KEY}
+      # --- FIN CORRECCIÓN ---
     ports:
       - "8000:80"
     networks:

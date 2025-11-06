@@ -1,35 +1,31 @@
 # Etapa 1: Construcción (Build)
-# Usamos una imagen de Node ligera
 FROM node:20-alpine AS build
 
-# Establecemos el directorio de trabajo
+# --- INICIA CORRECCIÓN 1 ---
+# Declara el argumento que recibiremos de docker-compose
+ARG VITE_IBM_API_KEY
+# Expone el argumento como una variable de entorno
+# ESTO SOLO AFECTA A ESTA ETAPA (build)
+ENV VITE_IBM_API_KEY=$VITE_IBM_API_KEY
+# --- FIN CORRECCIÓN 1 ---
+
 WORKDIR /app
-
-# Copiamos package.json y package-lock.json
 COPY package.json package-lock.json ./
-
-# Instalamos las dependencias
 RUN npm install
-
-# Copiamos el resto del código fuente
 COPY . .
 
-# Construimos la aplicación de producción
-# Esto crea la carpeta 'dist'
+# --- CORRECCIÓN 2 ---
+# Verifica que la variable esté presente antes de construir
+# Si la variable está vacía, el build fallará con un error claro
+RUN test -n "$VITE_IBM_API_KEY" || (echo "Error: VITE_IBM_API_KEY no está definida." && exit 1)
+# --- FIN CORRECCIÓN 2 ---
+
+# Al ejecutar 'npm run build', Vite ahora tendrá acceso a VITE_IBM_API_KEY
 RUN npm run build
 
 # Etapa 2: Producción (Serve)
-# Usamos una imagen de Nginx ligera
 FROM nginx:stable-alpine AS production
-
-# Copiamos los archivos estáticos construidos desde la etapa 'build'
 COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copiamos nuestro archivo de configuración personalizado de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Exponemos el puerto 80 (el que usa Nginx por defecto)
 EXPOSE 80
-
-# Comando para iniciar el servidor Nginx
 CMD ["nginx", "-g", "daemon off;"]
